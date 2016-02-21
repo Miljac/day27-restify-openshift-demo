@@ -6,7 +6,7 @@ var mongojs = require("mongojs");
 var ip_addr = process.env.OPENSHIFT_NODEJS_IP   || '127.0.0.1';
 var port    = process.env.OPENSHIFT_NODEJS_PORT || '8080';
 
-var db_name = process.env.OPENSHIFT_APP_NAME || "localjobs";
+var db_name = process.env.OPENSHIFT_APP_NAME || "localrnl";
 
 var connection_string = '127.0.0.1:27017/' + db_name;
 // if OPENSHIFT env variables are present, use the available connection info:
@@ -19,11 +19,11 @@ if(process.env.OPENSHIFT_MONGODB_DB_PASSWORD){
 }
 
 var db = mongojs(connection_string, [db_name]);
-var jobs = db.collection("jobs");
+var rnls = db.collection("rnl");
 
 
 var server = restify.createServer({
-    name : "localjobs"
+    name : "localrnl"
 });
 
 server.pre(restify.pre.userAgentConnection());
@@ -32,9 +32,9 @@ server.use(restify.queryParser());
 server.use(restify.bodyParser());
 server.use(restify.CORS());
 
-function findAllJobs(req, res , next){
+function findAllRnls(req, res , next){
     res.setHeader('Access-Control-Allow-Origin','*');
-    jobs.find().limit(20).sort({postedOn : -1} , function(err , success){
+    rnls.find().limit(20).sort({postedOn : -1} , function(err , success){
         console.log('Response success '+success);
         console.log('Response error '+err);
         if(success){
@@ -48,9 +48,9 @@ function findAllJobs(req, res , next){
     
 }
 
-function findJob(req, res , next){
+function findRnl(req, res , next){
     res.setHeader('Access-Control-Allow-Origin','*');
-    jobs.findOne({_id:mongojs.ObjectId(req.params.jobId)} , function(err , success){
+    rnls.findOne({_id:mongojs.ObjectId(req.params._id)} , function(err , success){
         console.log('Response success '+success);
         console.log('Response error '+err);
         if(success){
@@ -61,20 +61,20 @@ function findJob(req, res , next){
     })
 }
 
-function postNewJob(req , res , next){
-    var job = {};
-    job.title = req.params.title;
-    job.description = req.params.description;
-    job.location = req.params.location;
-    job.postedOn = new Date();
+function postNewRnl(req , res , next){
+    // var rnl = {};
+    // rnl.title = req.params.title;
+    // rnl.description = req.params.description;
+    // rnl.location = req.params.location;
+    // rnl.postedOn = new Date();
 
     res.setHeader('Access-Control-Allow-Origin','*');
     
-    jobs.save(job , function(err , success){
+    rnls.save(req.body, function(err , success){
         console.log('Response success '+success);
         console.log('Response error '+err);
         if(success){
-            res.send(201 , job);
+            res.send(201 , rnl);
             return next();
         }else{
             return next(err);
@@ -82,11 +82,11 @@ function postNewJob(req , res , next){
     });
 }
 
-function deleteJob(req , res , next){
+function deleteRnl(req , res , next){
     res.setHeader('Access-Control-Allow-Origin','*');
-    jobs.remove({_id:mongojs.ObjectId(req.params.jobId)} , function(err , success){
-        console.log('Response success '+success);
-        console.log('Response error '+err);
+    rnls.remove({_id:mongojs.ObjectId(req.params._id)} , function(err , success){
+        console.log('Response success ' + success);
+        console.log('Response error ' + err);
         if(success){
             res.send(204);
             return next();      
@@ -99,10 +99,10 @@ function deleteJob(req , res , next){
 
 var PATH = '/jobs'
 
-server.get({path : PATH , version : '0.0.1'} , findAllJobs);
-server.get({path : PATH +'/:jobId' , version : '0.0.1'} , findJob);
-server.post({path : PATH , version: '0.0.1'} ,postNewJob);
-server.del({path : PATH +'/:jobId' , version: '0.0.1'} ,deleteJob);
+server.get({path : PATH , version : '0.0.1'} , findAllRnls);
+server.get({path : PATH +'/:jobId' , version : '0.0.1'} , findRnl);
+server.post({path : PATH , version: '0.0.1'} ,postNewRnl);
+server.del({path : PATH +'/:jobId' , version: '0.0.1'} ,deleteRnl);
 
 
 server.listen(port ,ip_addr, function(){
