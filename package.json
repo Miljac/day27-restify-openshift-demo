@@ -1,16 +1,16 @@
 {
-  "name": "OpenShift-Sample-App",
+  "name": "RadniNalog",
   "version": "1.0.0",
-  "description": "OpenShift Sample Application",
+  "description": "Aplikacija za izradu i upravljanje radnim nalozima",
   "keywords": [
-    "OpenShift",
+    "RadniNalog",
     "Node.js",
     "application",
     "openshift"
   ],
   "author": {
-    "name": "OpenShift",
-    "email": "ramr@example.org",
+    "name": "Miljenko Martinic",
+    "email": "miljenko.martinic@yahoo.com",
     "url": "http://www.openshift.com/"
   },
   "homepage": "http://www.openshift.com/",
@@ -24,7 +24,8 @@
   },
   "dependencies": {
     "restify": "~2.6.0",
-    "mongojs": "~0.9.8"
+    "mongojs": "~0.9.8",
+    "oauth2-server": "~2.4.1"
   },
   "devDependencies": {},
   "bundleDependencies": [],
