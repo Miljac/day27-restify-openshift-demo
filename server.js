@@ -94,12 +94,17 @@ function deleteRnl(req, res, next) {
 }
 
 var PATH = '/jobs';
+var PATH1 = '/poslovi';
 
 server.get({ path: PATH, version: '0.0.1' }, findAllRnls);
 server.get({ path: PATH + '/:jobId', version: '0.0.1' }, findRnl);
 server.post({ path: PATH, version: '0.0.1' }, postNewRnl);
 server.del({ path: PATH + '/:jobId', version: '0.0.1' }, deleteRnl);
 
+server.get({ path: PATH1, version: '0.0.1' }, findAllRnls);
+server.get({ path: PATH1 + '/:jobId', version: '0.0.1' }, findRnl);
+server.post({ path: PATH1, version: '0.0.1' }, postNewRnl);
+server.del({ path: PATH1 + '/:jobId', version: '0.0.1' }, deleteRnl);
 
 server.listen(port, ip_addr, function () {
     console.log('%s listening at %s ', server.name, server.url);
